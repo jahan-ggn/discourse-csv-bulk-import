@@ -3,7 +3,7 @@ en:
     admin:
       site_settings:
         categories:
-          TODO_plugin_name: "Plugin Name"
+          discourse_csv_bulk_import: "Discourse Csv Bulk Import"
   js:
-    discourse_plugin_name:
+    discourse_csv_bulk_import:
       placeholder: placeholder

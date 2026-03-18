@@ -1,4 +1,4 @@
-# **Plugin Name** Plugin
+# **Discourse Csv Bulk Import** Plugin
 
 **Plugin Summary**
 
