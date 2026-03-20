@@ -1,4 +1,4 @@
-discourse_csv_bulk_import:
+plugins:
   discourse_csv_bulk_import_enabled:
     default: false
     client: true

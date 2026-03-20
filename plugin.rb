@@ -10,6 +10,8 @@
 
 enabled_site_setting :discourse_csv_bulk_import_enabled
 
+add_admin_route "csv_bulk_import.title", "csv-bulk-import"
+
 module ::DiscourseCsvBulkImport
   PLUGIN_NAME = "discourse-csv-bulk-import"
 end
