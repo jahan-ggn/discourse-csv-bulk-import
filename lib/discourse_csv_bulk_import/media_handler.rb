@@ -2,26 +2,29 @@
 
 module ::DiscourseCsvBulkImport
   class MediaHandler
-    IMAGE_REGEX = /!\[([^\]]*)\]\((?:uploads\/import_media\/)?([^)]+)\)/
+    MEDIA_REGEX = /!\[([^\]]*)\]\(uploads\/([^)]+)\)/
 
-    def self.process(raw:, images_path:)
+    def self.process(raw:, images_path:, user:)
       return raw if raw.blank? || images_path.blank?
 
-      raw.gsub(IMAGE_REGEX) do |match|
-        alt_text = $1
-        filename = $2
-        file_path = File.join(images_path, filename)
+      upload_cache = {}
 
-        if File.exist?(file_path)
-          upload = create_upload(file_path, filename)
-          if upload&.persisted?
-            "![#{alt_text}](#{upload.short_url})"
-          else
-            Rails.logger.warn("[CsvBulkImport] Failed to upload image: #{filename}")
-            match
-          end
+      raw.gsub(MEDIA_REGEX) do |match|
+        alt_text = $1
+        filename = URI.decode_www_form_component($2)
+        file_path = File.join(images_path, File.basename(filename))
+
+        unless File.exist?(file_path)
+          Rails.logger.warn("[CsvBulkImport] Media not found: #{file_path}")
+          next match
+        end
+
+        upload = upload_cache[filename] ||= create_upload(file_path, filename, user)
+
+        if upload&.persisted?
+          "![#{alt_text}](#{upload.short_url})"
         else
-          Rails.logger.warn("[CsvBulkImport] Image not found: #{file_path}")
+          Rails.logger.warn("[CsvBulkImport] Failed to upload media: #{filename}")
           match
         end
       end
@@ -29,14 +32,13 @@ module ::DiscourseCsvBulkImport
 
     private
 
-    def self.create_upload(file_path, filename)
-      tmp = File.open(file_path)
+    def self.create_upload(file_path, filename, user)
+      tmp = File.open(file_path, "rb")
 
       UploadCreator.new(
         tmp,
         filename,
-        skip_validations: true,
-      ).create_for(Discourse.system_user.id)
+      ).create_for(user.id)
     ensure
       tmp&.close
     end

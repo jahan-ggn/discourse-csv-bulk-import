@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 # name: discourse-csv-bulk-import
-# about: TODO
-# meta_topic_id: TODO
+# about: Bulk import topics, replies, media, and ratings from a CSV file uploaded as a zip archive
 # version: 0.0.1
-# authors: Discourse
-# url: TODO
-# required_version: 2.7.0
+# authors: Jahan Gagan
+# url: https://github.com/jahan-ggn/discourse-csv-bulk-import
 
 enabled_site_setting :discourse_csv_bulk_import_enabled
 

@@ -7,6 +7,10 @@ module ::DiscourseCsvBulkImport
     MAX_ZIP_SIZE = 100.megabytes
 
     def create
+      unless SiteSetting.discourse_csv_bulk_import_enabled
+        raise Discourse::InvalidAccess.new("Plugin is disabled")
+      end
+
       file = params.require(:file)
 
       validate_upload!(file)
@@ -15,10 +19,17 @@ module ::DiscourseCsvBulkImport
       extract_zip(file, tmp_path)
 
       csv_path = find_csv!(tmp_path)
-      images_path = File.join(tmp_path, "import_media")
+      images_path = File.join(tmp_path, "uploads")
       FileUtils.mkdir_p(images_path)
 
       job_id = SecureRandom.hex(16)
+
+      # Write initial status so polling returns meaningful data immediately
+      PluginStore.set(
+        PLUGIN_NAME,
+        "import_status_#{job_id}",
+        { status: "queued", message: "Import queued…", updated_at: Time.zone.now },
+      )
 
       Jobs.enqueue(
         :run_csv_import,
@@ -35,7 +46,7 @@ module ::DiscourseCsvBulkImport
     def status
       job_id = params.require(:job_id)
       data = PluginStore.get(PLUGIN_NAME, "import_status_#{job_id}")
-      render json: data || { status: "pending" }
+      render json: data || { status: "unknown" }
     end
 
     private
@@ -51,7 +62,7 @@ module ::DiscourseCsvBulkImport
     end
 
     def setup_tmp_dir
-      path = File.join(Rails.root, "tmp", "csv_import_#{SecureRandom.hex(8)}")
+      path = File.join(Dir.tmpdir, "csv_import_#{SecureRandom.hex(8)}")
       FileUtils.mkdir_p(path)
       path
     end
@@ -64,7 +75,9 @@ module ::DiscourseCsvBulkImport
     end
 
     def find_csv!(tmp_path)
-      csv_files = Dir.glob(File.join(tmp_path, "**", "*.csv"))
+      csv_files = Dir.glob(File.join(tmp_path, "**", "*.csv")).reject do |f|
+        f.include?("__MACOSX") || File.basename(f).start_with?(".")
+      end
 
       if csv_files.empty?
         FileUtils.rm_rf(tmp_path)
