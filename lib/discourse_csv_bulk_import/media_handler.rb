@@ -2,7 +2,7 @@
 
 module ::DiscourseCsvBulkImport
   class MediaHandler
-    MEDIA_REGEX = /!\[([^\]]*)\]\(uploads\/([^)]+)\)/
+    MEDIA_REGEX = %r{!\[([^\]]*)\]\(uploads/([^)]+)\)}
 
     def self.process(raw:, images_path:, user:)
       return raw if raw.blank? || images_path.blank?
@@ -39,10 +39,7 @@ module ::DiscourseCsvBulkImport
     def self.create_upload(file_path, filename, user)
       tmp = File.open(file_path, "rb")
 
-      UploadCreator.new(
-        tmp,
-        filename,
-      ).create_for(user.id)
+      UploadCreator.new(tmp, filename).create_for(user.id)
     ensure
       tmp&.close
     end

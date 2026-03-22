@@ -19,8 +19,7 @@ module ::DiscourseCsvBulkImport
       extract_zip(file, tmp_path)
 
       csv_path = find_csv!(tmp_path)
-      images_path = File.join(tmp_path, "uploads")
-      FileUtils.mkdir_p(images_path)
+      images_path = File.dirname(csv_path)
 
       job_id = SecureRandom.hex(16)
 
@@ -57,7 +56,9 @@ module ::DiscourseCsvBulkImport
       end
 
       if file.size > MAX_ZIP_SIZE
-        raise Discourse::InvalidParameters.new("File exceeds maximum size of #{MAX_ZIP_SIZE / 1.megabyte}MB")
+        raise Discourse::InvalidParameters.new(
+                "File exceeds maximum size of #{MAX_ZIP_SIZE / 1.megabyte}MB",
+              )
       end
     end
 
@@ -84,7 +85,9 @@ module ::DiscourseCsvBulkImport
 
       if csv_files.length > 1
         FileUtils.rm_rf(tmp_path)
-        raise Discourse::InvalidParameters.new("Multiple CSV files found — zip must contain exactly one")
+        raise Discourse::InvalidParameters.new(
+                "Multiple CSV files found — zip must contain exactly one",
+              )
       end
 
       csv_files.first

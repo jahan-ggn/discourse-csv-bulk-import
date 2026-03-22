@@ -6,7 +6,9 @@ module ::DiscourseCsvBulkImport
       return if rating.blank?
 
       unless defined?(DiscourseRatings)
-        Rails.logger.warn("[CsvBulkImport] Rating value provided but discourse-ratings plugin is not installed — skipping")
+        Rails.logger.warn(
+          "[CsvBulkImport] Rating value provided but discourse-ratings plugin is not installed — skipping",
+        )
         return
       end
 
@@ -15,15 +17,14 @@ module ::DiscourseCsvBulkImport
 
       types = post.topic.rating_types
       if types.blank?
-        Rails.logger.warn("[CsvBulkImport] No rating types configured for topic '#{post.topic.title}' — skipping rating")
+        Rails.logger.warn(
+          "[CsvBulkImport] No rating types configured for topic '#{post.topic.title}' — skipping rating",
+        )
         return
       end
 
       types.each do |type|
-        DiscourseRatings::Rating.build_and_set(
-          post,
-          { type: type, value: value, weight: 1 },
-        )
+        DiscourseRatings::Rating.build_and_set(post, { type: type, value: value, weight: 1 })
       end
 
       post.save_custom_fields(true)

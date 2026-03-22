@@ -3,7 +3,40 @@ en:
     admin:
       site_settings:
         categories:
-          discourse_csv_bulk_import: "Discourse Csv Bulk Import"
+          discourse_csv_bulk_import: "Discourse CSV Bulk Import"
   js:
     discourse_csv_bulk_import:
-      placeholder: placeholder
+      title: Discourse CSV Bulk Import
+      admin_navigation: Discourse CSV Bulk Import
+    csv_bulk_import:
+      title: "Bulk Import"
+      instructions: "Upload a zip file containing your import data:"
+      instructions_csv: "One CSV file with topics, replies, and metadata"
+      instructions_media: "An 'uploads' folder with any referenced media files"
+      drop_zone: "Drag and drop your zip file here, or"
+      choose_file: "Choose File"
+      change_file: "Change File"
+      upload_button: "Upload & Import"
+      upload_another: "Upload Another"
+      status:
+        uploading: "Uploading zip file…"
+        queued: "Import queued. Waiting for processing…"
+        upload_failed: "Upload failed. Please try again."
+      progress_details: "%{imported} imported, %{skipped} skipped, %{failed} failed of %{total} topics"
+      results:
+        title: "Import Complete"
+        imported_label: "Imported"
+        skipped_label: "Skipped"
+        failed_label: "Failed"
+        imported:
+          one: "%{count} topic imported"
+          other: "%{count} topics imported"
+        skipped:
+          one: "%{count} topic skipped"
+          other: "%{count} topics skipped"
+        failed:
+          one: "%{count} topic failed"
+          other: "%{count} topics failed"
+      details:
+        errors: "Failed Topics"
+        skipped: "Skipped Topics"

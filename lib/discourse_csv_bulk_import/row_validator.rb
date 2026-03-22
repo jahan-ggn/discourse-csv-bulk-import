@@ -40,7 +40,6 @@ module ::DiscourseCsvBulkImport
         validate_rating(row, line)
         validate_username(row, line)
         validate_content_length(row, line)
-        validate_topic_external_id(row, line)
       end
 
       validate_topic_integrity if @errors.empty?
@@ -67,9 +66,14 @@ module ::DiscourseCsvBulkImport
 
     def validate_required_fields(row, line)
       REQUIRED_COLUMNS.each do |col|
-        if first_post?(row) && row[col].to_s.strip.blank?
+        if col == "topic_external_id"
+          # Required on ALL rows (first post and replies)
+          @errors << "Row #{line}: '#{col}' cannot be blank" if row[col].to_s.strip.blank?
+        elsif first_post?(row) && row[col].to_s.strip.blank?
           @errors << "Row #{line}: '#{col}' is required"
-        elsif !first_post?(row) && %w[username email created_at post_number content].include?(col) && row[col].to_s.strip.blank?
+        elsif !first_post?(row) &&
+              %w[username email created_at post_number content].include?(col) &&
+              row[col].to_s.strip.blank?
           @errors << "Row #{line}: '#{col}' is required"
         end
       end
@@ -78,30 +82,24 @@ module ::DiscourseCsvBulkImport
     def validate_columns
       first_keys = @rows.first&.keys || []
       missing = REQUIRED_COLUMNS - first_keys
-      if missing.any?
-        @errors << "Missing columns: #{missing.join(', ')}"
-      end
+      @errors << "Missing columns: #{missing.join(", ")}" if missing.any?
 
       @rows.each_with_index do |row, index|
         row_missing = REQUIRED_COLUMNS - row.keys
         if row_missing.any?
-          @errors << "Row #{index + 2}: missing columns: #{row_missing.join(', ')}"
+          @errors << "Row #{index + 2}: missing columns: #{row_missing.join(", ")}"
         end
       end
     end
 
     def validate_post_number(row, line)
       val = row["post_number"].to_i
-      if val < 1
-        @errors << "Row #{line}: 'post_number' must be >= 1"
-      end
+      @errors << "Row #{line}: 'post_number' must be >= 1" if val < 1
     end
 
     def validate_created_at(row, line)
       result = Time.zone.parse(row["created_at"])
-      if result.nil?
-        @errors << "Row #{line}: 'created_at' is not a valid datetime"
-      end
+      @errors << "Row #{line}: 'created_at' is not a valid datetime" if result.nil?
     rescue ArgumentError, TypeError
       @errors << "Row #{line}: 'created_at' is not a valid datetime"
     end
@@ -121,9 +119,7 @@ module ::DiscourseCsvBulkImport
       end
 
       val = row["rating"].to_f
-      if val < 1 || val > 5
-        @errors << "Row #{line}: 'rating' must be between 1 and 5"
-      end
+      @errors << "Row #{line}: 'rating' must be between 1 and 5" if val < 1 || val > 5
     end
 
     def validate_username(row, line)
@@ -146,12 +142,6 @@ module ::DiscourseCsvBulkImport
       max = defined?(SiteSetting) ? SiteSetting.max_post_length : 32_000
       if content.length > max
         @errors << "Row #{line}: 'content' exceeds maximum length of #{max} characters"
-      end
-    end
-
-    def validate_topic_external_id(row, line)
-      if row["topic_external_id"].to_s.strip.blank?
-        @errors << "Row #{line}: 'topic_external_id' cannot be blank"
       end
     end
 

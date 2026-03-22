@@ -5,4 +5,6 @@ DiscourseCsvBulkImport::Engine.routes.draw do
   get "/import/status/:job_id" => "import#status"
 end
 
-Discourse::Application.routes.draw { mount ::DiscourseCsvBulkImport::Engine, at: "discourse-csv-bulk-import" }
+Discourse::Application.routes.draw do
+  mount ::DiscourseCsvBulkImport::Engine, at: "discourse-csv-bulk-import"
+end

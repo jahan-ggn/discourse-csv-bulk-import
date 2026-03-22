@@ -9,7 +9,7 @@ module ::DiscourseCsvBulkImport
         if user.username.downcase != username.downcase
           Rails.logger.warn(
             "[CsvBulkImport] CSV username '#{username}' doesn't match existing user '#{user.username}' " \
-            "for email '#{email}' — using existing user"
+              "for email '#{email}' — using existing user",
           )
         end
         return user
@@ -20,7 +20,7 @@ module ::DiscourseCsvBulkImport
       if user.present?
         Rails.logger.warn(
           "[CsvBulkImport] Username '#{username}' exists but with a different email. " \
-          "Matched by email failed. Creating new user with modified username."
+            "Matched by email failed. Creating new user with modified username.",
         )
       end
 
@@ -35,17 +35,18 @@ module ::DiscourseCsvBulkImport
       if suggested != username
         Rails.logger.warn(
           "[CsvBulkImport] Username '#{username}' was not available. " \
-          "Created user with username '#{suggested}' instead."
+            "Created user with username '#{suggested}' instead.",
         )
       end
 
-      user = User.new(
-        username: suggested,
-        email: email,
-        active: true,
-        approved: true,
-        trust_level: SiteSetting.default_trust_level,
-      )
+      user =
+        User.new(
+          username: suggested,
+          email: email,
+          active: true,
+          approved: true,
+          trust_level: SiteSetting.default_trust_level,
+        )
 
       user.save!(validate: false)
 

@@ -16,6 +16,8 @@ end
 
 require_relative "lib/discourse_csv_bulk_import/engine"
 
+register_asset "stylesheets/common/common.scss"
+
 after_initialize do
   # Code which should run after Rails has finished booting
 end
