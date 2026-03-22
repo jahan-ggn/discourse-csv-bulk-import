@@ -40,3 +40,5 @@ en:
       details:
         errors: "Failed Topics"
         skipped: "Skipped Topics"
+      errors:
+        title: "Import Failed"

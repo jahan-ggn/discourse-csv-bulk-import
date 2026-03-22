@@ -66,11 +66,7 @@ module Jobs
           end
         rescue => e
           results[:failed_topics] += 1
-          results[:details] << {
-            topic_external_id: external_id,
-            type: "error",
-            message: e.message,
-          }
+          results[:details] << { topic_external_id: external_id, type: "error", message: e.message }
           Rails.logger.error(
             "[CsvBulkImport] Failed to import topic '#{external_id}': #{e.message}",
           )

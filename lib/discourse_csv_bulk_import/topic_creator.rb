@@ -25,7 +25,7 @@ module ::DiscourseCsvBulkImport
         )
 
       post = post_creator.create
-      unless post.present? && post.errors.blank?
+      if post.blank? || post.errors.present?
         raise "Failed to create topic '#{title}': #{post&.errors&.full_messages&.join(", ") || "unknown error"}"
       end
 
@@ -53,7 +53,7 @@ module ::DiscourseCsvBulkImport
         )
 
       post = post_creator.create
-      unless post.present? && post.errors.blank?
+      if post.blank? || post.errors.present?
         raise "Failed to create reply in topic '#{topic.title}': #{post&.errors&.full_messages&.join(", ") || "unknown error"}"
       end
 

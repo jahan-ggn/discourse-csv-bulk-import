@@ -1,4 +1,5 @@
 import Component from "@glimmer/component";
+import { htmlSafe } from "@ember/template";
 import icon from "discourse/helpers/d-icon";
 
 export default class ImportProgress extends Component {
@@ -14,6 +15,10 @@ export default class ImportProgress extends Component {
     return Math.round((processed / p.total_topics) * 100);
   }
 
+  get progressStyle() {
+    return htmlSafe(`width: ${this.progressPercent}%`);
+  }
+
   <template>
     <div class="import-progress">
       <div class="progress-header">
@@ -23,10 +28,7 @@ export default class ImportProgress extends Component {
 
       {{#if @progress}}
         <div class="progress-bar-container">
-          <div
-            class="progress-bar-fill"
-            style="width: {{this.progressPercent}}%"
-          ></div>
+          <div class="progress-bar-fill" style={{this.progressStyle}}></div>
         </div>
         <div class="progress-stats">
           <span class="stat imported">{{icon "check"}}

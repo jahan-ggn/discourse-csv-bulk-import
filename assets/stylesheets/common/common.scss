@@ -167,6 +167,7 @@
       align-items: center;
       justify-content: center;
       gap: 0.75em;
+
       &:not(:last-child) {
         margin-bottom: 1.5em;
       }
@@ -222,12 +223,15 @@
         &.imported .d-icon {
           color: var(--success);
         }
+
         &.skipped .d-icon {
           color: var(--primary-medium);
         }
+
         &.failed .d-icon {
           color: var(--danger);
         }
+
         &.total .d-icon {
           color: var(--tertiary);
         }
@@ -306,9 +310,11 @@
         &.imported .stat-value {
           color: var(--success);
         }
+
         &.skipped .stat-value {
           color: var(--primary-medium);
         }
+
         &.failed .stat-value {
           color: var(--danger);
         }
@@ -373,6 +379,7 @@
       .detail-error .detail-topic {
         color: var(--danger);
       }
+
       .detail-skipped .detail-topic {
         color: var(--primary-medium);
       }

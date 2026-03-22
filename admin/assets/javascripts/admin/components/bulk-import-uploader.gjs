@@ -74,19 +74,12 @@ export default class BulkImportUploader extends Component {
     );
   }
 
-  get hasDetails() {
-    return this.progress?.details?.length > 0 || this.errors?.length > 0;
+  get hasValidationErrors() {
+    return this.errors?.length > 0;
   }
 
-  get allErrors() {
-    const errors = [];
-    if (this.errors?.length) {
-      errors.push(...this.errors);
-    }
-    if (this.progress?.errors?.length) {
-      errors.push(...this.progress.errors);
-    }
-    return errors;
+  get hasDetails() {
+    return this.progress?.details?.length > 0;
   }
 
   get showResults() {
@@ -203,6 +196,20 @@ export default class BulkImportUploader extends Component {
           @message={{this.message}}
           @progress={{this.progress}}
         />
+      {{/if}}
+
+      {{#if this.hasValidationErrors}}
+        <div class="import-validation-errors">
+          <div class="details-header">
+            {{icon "triangle-exclamation"}}
+            <h4>Validation Errors</h4>
+          </div>
+          <ul class="details-list">
+            {{#each this.errors as |error|}}
+              <li class="detail-error">{{error}}</li>
+            {{/each}}
+          </ul>
+        </div>
       {{/if}}
 
       {{#if this.hasDetails}}
