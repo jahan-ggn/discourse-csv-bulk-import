@@ -5,7 +5,15 @@ module ::DiscourseCsvBulkImport
     def self.resolve(username:, email:)
       # Check by email first — most reliable identifier
       user = User.find_by_email(email)
-      return user if user.present?
+      if user.present?
+        if user.username.downcase != username.downcase
+          Rails.logger.warn(
+            "[CsvBulkImport] CSV username '#{username}' doesn't match existing user '#{user.username}' " \
+            "for email '#{email}' — using existing user"
+          )
+        end
+        return user
+      end
 
       # Check by username
       user = User.find_by_username(username)

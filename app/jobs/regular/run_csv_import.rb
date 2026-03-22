@@ -92,18 +92,27 @@ module Jobs
     end
 
     def parse_csv
-      require "csv"
-      rows = CSV.read(@csv_path, headers: true, liberal_parsing: true).map(&:to_h)
+        require "csv"
 
-      if rows.empty?
-        publish_status("failed", message: "CSV file is empty")
-        return nil
-      end
+        csv = CSV.read(@csv_path, headers: true)
 
-      rows
+        duplicate_headers = csv.headers.tally.select { |_, count| count > 1 }.keys
+        if duplicate_headers.any?
+            publish_status("failed", message: "CSV has duplicate column headers: #{duplicate_headers.join(', ')}")
+            return nil
+        end
+
+        rows = csv.map(&:to_h)
+
+        if rows.empty?
+            publish_status("failed", message: "CSV file is empty")
+            return nil
+        end
+
+        rows
     rescue CSV::MalformedCSVError => e
-      publish_status("failed", message: "Malformed CSV: #{e.message}")
-      nil
+        publish_status("failed", message: "Malformed CSV: #{e.message}")
+        nil
     end
 
     def publish_status(status, message: nil, progress: nil, errors: nil)

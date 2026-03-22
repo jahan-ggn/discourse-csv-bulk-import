@@ -19,7 +19,11 @@ module ::DiscourseCsvBulkImport
           next match
         end
 
-        upload = upload_cache[filename] ||= create_upload(file_path, filename, user)
+        upload = upload_cache[filename]
+        unless upload
+          upload = create_upload(file_path, filename, user)
+          upload_cache[filename] = upload if upload&.persisted?
+        end
 
         if upload&.persisted?
           "![#{alt_text}](#{upload.short_url})"

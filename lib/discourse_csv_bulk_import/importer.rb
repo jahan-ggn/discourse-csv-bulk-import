@@ -72,7 +72,6 @@ module ::DiscourseCsvBulkImport
 
         RatingHandler.update_topic_average(first_post)
 
-        # Mark as imported after successful transaction
         PluginStore.set(PLUGIN_NAME, "#{STORE_PREFIX}#{external_id}", {
           topic_id: topic.id,
           imported_at: Time.zone.now,
@@ -102,6 +101,13 @@ module ::DiscourseCsvBulkImport
     end
 
     def log_ignored_fields(reply_row, first_row)
+      if reply_row["topic_title"].present? && reply_row["topic_title"] != first_row["topic_title"]
+        Rails.logger.warn(
+          "[CsvBulkImport] Reply post_number #{reply_row['post_number']}: " \
+          "'topic_title' value ignored — only first post's title is used"
+        )
+      end
+
       if reply_row["category"].present? && reply_row["category"] != first_row["category"]
         Rails.logger.warn(
           "[CsvBulkImport] Reply post_number #{reply_row['post_number']}: " \

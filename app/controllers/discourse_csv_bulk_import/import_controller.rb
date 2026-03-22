@@ -75,9 +75,7 @@ module ::DiscourseCsvBulkImport
     end
 
     def find_csv!(tmp_path)
-      csv_files = Dir.glob(File.join(tmp_path, "**", "*.csv")).reject do |f|
-        f.include?("__MACOSX") || File.basename(f).start_with?(".")
-      end
+      csv_files = Dir.glob(File.join(tmp_path, "**", "*.csv"))
 
       if csv_files.empty?
         FileUtils.rm_rf(tmp_path)
