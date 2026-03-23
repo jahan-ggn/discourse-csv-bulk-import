@@ -50,27 +50,33 @@ module ::DiscourseCsvBulkImport
     end
 
     def active
-      rows = PluginStoreRow.where(
-        plugin_name: ::DiscourseCsvBulkImport::PLUGIN_NAME,
-      ).where("key LIKE 'import_status_%'")
+      rows =
+        PluginStoreRow.where(plugin_name: ::DiscourseCsvBulkImport::PLUGIN_NAME).where(
+          "key LIKE 'import_status_%'",
+        )
 
       active_job = nil
 
       rows.find_each do |row|
-        data = JSON.parse(row.value) rescue next
+        data =
+          begin
+            JSON.parse(row.value)
+          rescue StandardError
+            next
+          end
         next if data["user_id"] != current_user.id
 
-        next if !%w[complete failed].include?(data["status"]) &&
-                data["updated_at"].present? &&
-                Time.zone.parse(data["updated_at"]) < 1.minute.ago
-
-        next if %w[complete failed].include?(data["status"]) &&
-                data["updated_at"].present? &&
-                Time.zone.parse(data["updated_at"]) < 1.hour.ago
-
-        if active_job.nil? || data["updated_at"] > active_job["updated_at"]
-          active_job = data
+        if !%w[complete failed].include?(data["status"]) && data["updated_at"].present? &&
+             Time.zone.parse(data["updated_at"]) < 1.minute.ago
+          next
         end
+
+        if %w[complete failed].include?(data["status"]) && data["updated_at"].present? &&
+             Time.zone.parse(data["updated_at"]) < 1.hour.ago
+          next
+        end
+
+        active_job = data if active_job.nil? || data["updated_at"] > active_job["updated_at"]
       end
 
       render json: active_job || { status: "none" }
