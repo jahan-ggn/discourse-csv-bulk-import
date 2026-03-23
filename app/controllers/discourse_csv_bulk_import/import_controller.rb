@@ -8,7 +8,9 @@ module ::DiscourseCsvBulkImport
 
     def create
       unless SiteSetting.discourse_csv_bulk_import_enabled
-        raise Discourse::InvalidAccess.new("Plugin is disabled")
+        raise Discourse::InvalidAccess.new(
+                I18n.t("discourse_csv_bulk_import.errors.plugin_disabled"),
+              )
       end
 
       file = params.require(:file)
@@ -23,7 +25,6 @@ module ::DiscourseCsvBulkImport
 
       job_id = SecureRandom.hex(16)
 
-      # Write initial status so polling returns meaningful data immediately
       PluginStore.set(
         PLUGIN_NAME,
         "import_status_#{job_id}",
@@ -52,12 +53,17 @@ module ::DiscourseCsvBulkImport
 
     def validate_upload!(file)
       unless file.original_filename.match?(/\.zip$/i)
-        raise Discourse::InvalidParameters.new("File must be a .zip archive")
+        raise Discourse::InvalidParameters.new(
+                I18n.t("discourse_csv_bulk_import.errors.file_not_zip"),
+              )
       end
 
       if file.size > MAX_ZIP_SIZE
         raise Discourse::InvalidParameters.new(
-                "File exceeds maximum size of #{MAX_ZIP_SIZE / 1.megabyte}MB",
+                I18n.t(
+                  "discourse_csv_bulk_import.errors.file_too_large",
+                  max_size: MAX_ZIP_SIZE / 1.megabyte,
+                ),
               )
       end
     end
@@ -80,13 +86,15 @@ module ::DiscourseCsvBulkImport
 
       if csv_files.empty?
         FileUtils.rm_rf(tmp_path)
-        raise Discourse::InvalidParameters.new("No CSV file found inside the zip")
+        raise Discourse::InvalidParameters.new(
+                I18n.t("discourse_csv_bulk_import.errors.no_csv_found"),
+              )
       end
 
       if csv_files.length > 1
         FileUtils.rm_rf(tmp_path)
         raise Discourse::InvalidParameters.new(
-                "Multiple CSV files found — zip must contain exactly one",
+                I18n.t("discourse_csv_bulk_import.errors.multiple_csv_found"),
               )
       end
 

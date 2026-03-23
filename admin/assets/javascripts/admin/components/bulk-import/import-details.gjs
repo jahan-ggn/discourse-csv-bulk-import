@@ -26,17 +26,17 @@ export default class ImportDetails extends Component {
 
   <template>
     {{#if this.hasErrors}}
-      <div class="import-details error-section">
-        <div class="details-header">
+      <div class="import-details import-details--errors">
+        <div class="import-details__header">
           {{icon "triangle-exclamation"}}
           <h4>{{i18n "csv_bulk_import.details.errors"}}</h4>
         </div>
-        <ul class="details-list">
+        <ul class="import-details__list">
           {{#each this.groupedDetails.errors as |item|}}
-            <li class="detail-error">
-              <span class="detail-topic">Topic
+            <li class="import-details__item import-details__item--error">
+              <span class="import-details__topic">Topic
                 {{item.topic_external_id}}:</span>
-              <span class="detail-message">{{item.message}}</span>
+              <span class="import-details__message">{{item.message}}</span>
             </li>
           {{/each}}
         </ul>
@@ -44,17 +44,17 @@ export default class ImportDetails extends Component {
     {{/if}}
 
     {{#if this.hasSkipped}}
-      <div class="import-details skipped-section">
-        <div class="details-header">
+      <div class="import-details import-details--skipped">
+        <div class="import-details__header">
           {{icon "forward"}}
           <h4>{{i18n "csv_bulk_import.details.skipped"}}</h4>
         </div>
-        <ul class="details-list">
+        <ul class="import-details__list">
           {{#each this.groupedDetails.skipped as |item|}}
-            <li class="detail-skipped">
-              <span class="detail-topic">Topic
+            <li class="import-details__item import-details__item--skipped">
+              <span class="import-details__topic">Topic
                 {{item.topic_external_id}}:</span>
-              <span class="detail-message">{{item.message}}</span>
+              <span class="import-details__message">{{item.message}}</span>
             </li>
           {{/each}}
         </ul>

@@ -1,4 +1,5 @@
 import Component from "@glimmer/component";
+import { concat } from "@ember/helper";
 import { htmlSafe } from "@ember/template";
 import icon from "discourse/helpers/d-icon";
 
@@ -15,32 +16,39 @@ export default class ImportProgress extends Component {
     return Math.round((processed / p.total_topics) * 100);
   }
 
-  get progressStyle() {
-    return htmlSafe(`width: ${this.progressPercent}%`);
-  }
-
   <template>
     <div class="import-progress">
-      <div class="progress-header">
-        <div class="spinner-icon"></div>
-        <span class="progress-message">{{@message}}</span>
+      <div class="import-progress__header">
+        <div class="import-progress__spinner"></div>
+        <span class="import-progress__message">{{@message}}</span>
       </div>
 
       {{#if @progress}}
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" style={{this.progressStyle}}></div>
+        <div class="import-progress__bar">
+          <div
+            class="import-progress__bar-fill"
+            style={{htmlSafe (concat "width: " this.progressPercent "%")}}
+          ></div>
         </div>
-        <div class="progress-stats">
-          <span class="stat imported">{{icon "check"}}
+        <div class="import-progress__stats">
+          <span
+            class="import-progress__stat import-progress__stat--imported"
+          >{{icon "check"}}
             {{@progress.imported_topics}}
             imported</span>
-          <span class="stat skipped">{{icon "forward"}}
+          <span
+            class="import-progress__stat import-progress__stat--skipped"
+          >{{icon "forward"}}
             {{@progress.skipped_topics}}
             skipped</span>
-          <span class="stat failed">{{icon "xmark"}}
+          <span
+            class="import-progress__stat import-progress__stat--failed"
+          >{{icon "xmark"}}
             {{@progress.failed_topics}}
             failed</span>
-          <span class="stat total">{{icon "list"}}
+          <span
+            class="import-progress__stat import-progress__stat--total"
+          >{{icon "list"}}
             {{@progress.total_topics}}
             total</span>
         </div>

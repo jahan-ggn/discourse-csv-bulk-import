@@ -14,17 +14,17 @@ en:
       instructions_csv: "One CSV file with topics, replies, and metadata"
       instructions_media: "An 'uploads' folder with any referenced media files"
       drop_zone: "Drag and drop your zip file here, or"
-      choose_file: "Choose File"
-      change_file: "Change File"
-      upload_button: "Upload & Import"
-      upload_another: "Upload Another"
+      choose_file: "Choose file"
+      change_file: "Change file"
+      upload_button: "Upload & import"
+      upload_another: "Upload another"
       status:
         uploading: "Uploading zip file…"
         queued: "Import queued. Waiting for processing…"
         upload_failed: "Upload failed. Please try again."
       progress_details: "%{imported} imported, %{skipped} skipped, %{failed} failed of %{total} topics"
       results:
-        title: "Import Complete"
+        title: "Import complete"
         imported_label: "Imported"
         skipped_label: "Skipped"
         failed_label: "Failed"
@@ -38,7 +38,9 @@ en:
           one: "%{count} topic failed"
           other: "%{count} topics failed"
       details:
-        errors: "Failed Topics"
-        skipped: "Skipped Topics"
+        errors: "Failed topics"
+        skipped: "Skipped topics"
       errors:
-        title: "Import Failed"
+        title: "Import failed"
+      validation_errors:
+        title: "Validation errors"

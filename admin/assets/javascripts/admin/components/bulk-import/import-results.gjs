@@ -13,12 +13,12 @@ export default class ImportResults extends Component {
   }
 
   get resultClass() {
-    return this.isSuccess ? "success" : "error";
+    return this.isSuccess ? "import-results--success" : "import-results--error";
   }
 
   <template>
     <div class="import-results {{this.resultClass}}">
-      <div class="results-header">
+      <div class="import-results__header">
         {{icon this.resultIcon}}
         <h3>{{if
             this.isSuccess
@@ -26,25 +26,37 @@ export default class ImportResults extends Component {
             (i18n "csv_bulk_import.errors.title")
           }}</h3>
       </div>
-      <p class="results-message">{{@message}}</p>
+      <p class="import-results__message">{{@message}}</p>
 
       {{#if (and this.isSuccess @progress)}}
-        <div class="results-stats">
-          <div class="stat-card imported">
-            <span class="stat-value">{{@progress.imported_topics}}</span>
-            <span class="stat-label">{{i18n
+        <div class="import-results__stats">
+          <div
+            class="import-results__stat-card import-results__stat-card--imported"
+          >
+            <span
+              class="import-results__stat-value"
+            >{{@progress.imported_topics}}</span>
+            <span class="import-results__stat-label">{{i18n
                 "csv_bulk_import.results.imported_label"
               }}</span>
           </div>
-          <div class="stat-card skipped">
-            <span class="stat-value">{{@progress.skipped_topics}}</span>
-            <span class="stat-label">{{i18n
+          <div
+            class="import-results__stat-card import-results__stat-card--skipped"
+          >
+            <span
+              class="import-results__stat-value"
+            >{{@progress.skipped_topics}}</span>
+            <span class="import-results__stat-label">{{i18n
                 "csv_bulk_import.results.skipped_label"
               }}</span>
           </div>
-          <div class="stat-card failed">
-            <span class="stat-value">{{@progress.failed_topics}}</span>
-            <span class="stat-label">{{i18n
+          <div
+            class="import-results__stat-card import-results__stat-card--failed"
+          >
+            <span
+              class="import-results__stat-value"
+            >{{@progress.failed_topics}}</span>
+            <span class="import-results__stat-label">{{i18n
                 "csv_bulk_import.results.failed_label"
               }}</span>
           </div>

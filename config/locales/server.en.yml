@@ -1,1 +1,10 @@
 en:
+  site_settings:
+    discourse_csv_bulk_import_enabled: "Enable the CSV bulk import plugin"
+  discourse_csv_bulk_import:
+    errors:
+      plugin_disabled: "Plugin is disabled"
+      file_not_zip: "File must be a .zip archive"
+      file_too_large: "File exceeds maximum size of %{max_size}MB"
+      no_csv_found: "No CSV file found inside the zip"
+      multiple_csv_found: "Multiple CSV files found — zip must contain exactly one"
