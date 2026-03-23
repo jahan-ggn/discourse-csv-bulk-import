@@ -3,6 +3,7 @@
 DiscourseCsvBulkImport::Engine.routes.draw do
   resource :import, only: [:create], controller: "import"
   get "/import/status/:job_id" => "import#status"
+  get "/import/active" => "import#active"
 end
 
 Discourse::Application.routes.draw do

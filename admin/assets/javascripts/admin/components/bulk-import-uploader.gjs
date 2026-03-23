@@ -22,6 +22,11 @@ export default class BulkImportUploader extends Component {
   @tracked errors = null;
   @tracked dragOver = false;
 
+  constructor() {
+    super(...arguments);
+    this.checkForActiveJob();
+  }
+
   willDestroy() {
     super.willDestroy(...arguments);
     this.cleanupPreviousJob();
@@ -217,6 +222,22 @@ export default class BulkImportUploader extends Component {
     setTimeout(poll, 2000);
   }
 
+  async checkForActiveJob() {
+    try {
+      const data = await ajax("/discourse-csv-bulk-import/import/active");
+      if (data?.job_id && data.status !== "none") {
+        this.jobId = data.job_id;
+        this.status = data.status;
+        this.message = data.message;
+        this.progress = data.progress;
+        this.errors = data.errors;
+        this.subscribeToStatus(data.job_id);
+      }
+    } catch {
+      // silently ignore — no active job
+    }
+  }
+
   @bind
   onStatusUpdate(data) {
     if (!this.jobId || this.status === "uploading") {
@@ -263,7 +284,7 @@ export default class BulkImportUploader extends Component {
             {{on "drop" this.onDrop}}
           >
             <div class="upload-zone__selected">
-              {{icon "file-zipper"}}
+              {{icon "file-archive"}}
               <div class="upload-zone__file-info">
                 <span class="upload-zone__file-name">{{this.fileName}}</span>
                 <span class="upload-zone__file-size">{{this.fileSize}}</span>

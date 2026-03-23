@@ -140,6 +140,8 @@ module Jobs
         message: message,
         progress: progress,
         errors: errors,
+        user_id: @current_user_id,
+        job_id: @job_id,
         updated_at: Time.zone.now,
       }
 

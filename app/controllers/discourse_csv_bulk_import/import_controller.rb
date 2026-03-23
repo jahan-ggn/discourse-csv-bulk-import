@@ -49,6 +49,33 @@ module ::DiscourseCsvBulkImport
       render json: data || { status: "unknown" }
     end
 
+    def active
+      rows = PluginStoreRow.where(
+        plugin_name: ::DiscourseCsvBulkImport::PLUGIN_NAME,
+      ).where("key LIKE 'import_status_%'")
+
+      active_job = nil
+
+      rows.find_each do |row|
+        data = JSON.parse(row.value) rescue next
+        next if data["user_id"] != current_user.id
+
+        next if !%w[complete failed].include?(data["status"]) &&
+                data["updated_at"].present? &&
+                Time.zone.parse(data["updated_at"]) < 1.minute.ago
+
+        next if %w[complete failed].include?(data["status"]) &&
+                data["updated_at"].present? &&
+                Time.zone.parse(data["updated_at"]) < 1.hour.ago
+
+        if active_job.nil? || data["updated_at"] > active_job["updated_at"]
+          active_job = data
+        end
+      end
+
+      render json: active_job || { status: "none" }
+    end
+
     private
 
     def validate_upload!(file)

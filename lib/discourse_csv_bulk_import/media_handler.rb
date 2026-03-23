@@ -2,7 +2,7 @@
 
 module ::DiscourseCsvBulkImport
   class MediaHandler
-    MEDIA_REGEX = %r{!\[([^\]]*)\]\(uploads/([^)]+)\)}
+    MEDIA_REGEX = %r{!\[([^\]]*)\]\((?!https?://)([^)/]+)\)}
 
     def self.process(raw:, images_path:, user:)
       return raw if raw.blank? || images_path.blank?

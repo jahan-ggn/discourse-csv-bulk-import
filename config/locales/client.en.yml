@@ -9,10 +9,10 @@ en:
       title: Discourse CSV Bulk Import
       admin_navigation: Discourse CSV Bulk Import
     csv_bulk_import:
-      title: "Bulk Import"
+      title: "CSV Bulk Import"
       instructions: "Upload a zip file containing your import data:"
       instructions_csv: "One CSV file with topics, replies, and metadata"
-      instructions_media: "An 'uploads' folder with any referenced media files"
+      instructions_media: "Any referenced media files alongside the CSV"
       drop_zone: "Drag and drop your zip file here, or"
       choose_file: "Choose file"
       change_file: "Change file"

@@ -264,6 +264,7 @@
     &__message {
       color: var(--primary-high);
       margin-bottom: 1em;
+      word-break: break-word;
     }
 
     &__stats {
