@@ -11,7 +11,15 @@ module ::DiscourseCsvBulkImport
     end
 
     def self.already_imported?(external_id)
-      PluginStore.get(PLUGIN_NAME, "#{STORE_PREFIX}#{external_id}").present?
+      data = PluginStore.get(PLUGIN_NAME, "#{STORE_PREFIX}#{external_id}")
+      return false if data.blank?
+
+      if Topic.exists?(data["topic_id"])
+        true
+      else
+        PluginStore.remove(PLUGIN_NAME, "#{STORE_PREFIX}#{external_id}")
+        false
+      end
     end
 
     def import!
